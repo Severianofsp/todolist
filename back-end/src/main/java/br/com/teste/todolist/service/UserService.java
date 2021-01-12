@@ -2,6 +2,7 @@ package br.com.teste.todolist.service;
 
 import br.com.teste.todolist.model.User;
 import br.com.teste.todolist.repository.UserRepository;
+import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -22,13 +23,15 @@ public class UserService {
         return userRepository.findAll();
     }
 
-    public Optional<User> findById(Long id){
-        return userRepository.findById(id);
+    public User findById(Long id) throws NotFoundException {
+        return userRepository.findById(id)
+                .orElseThrow(()->new NotFoundException("Não encontrado user com id "+ id));
     }
 
-    public User updateUser(Long id, User user){
+    public User updateUser(Long id, User user) throws NotFoundException {
 
-        User atualiza = userRepository.findById(id).orElseThrow();
+        User atualiza = userRepository.findById(id)
+                .orElseThrow(()->new NotFoundException("Não encontrado user com id "+ id));
 
         atualiza.setEmail(user.getEmail());
         atualiza.setNome(user.getNome());
@@ -39,8 +42,9 @@ public class UserService {
         return atualiza;
     }
 
-    public void deleteUserById(Long id){
-        User user = userRepository.findById(id).orElseThrow();
+    public void deleteUserById(Long id) throws NotFoundException {
+        User user = userRepository.findById(id)
+                .orElseThrow(()->new NotFoundException("Não encontrado user com id " + id));
         userRepository.delete(user);
     }
 }

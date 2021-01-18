@@ -2,15 +2,11 @@ package br.com.teste.todolist.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
-
-import java.sql.Date;
 
 import javax.persistence.*;
 
 @Entity
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
 public class Lista {
 	
@@ -21,4 +17,17 @@ public class Lista {
 	private String mensagem;
 	private String data;
 
+	@ManyToOne
+	@JoinColumn(name = "id_usr_fk")
+	private Users user;
+
+	public Lista() {
+	}
+
+	public Lista(Lista lista, Users user) {
+		this.titulo = lista.getTitulo();
+		this.mensagem = lista.getMensagem();
+		this.data = lista.getData();
+		this.user = user;
+	}
 }

@@ -1,13 +1,15 @@
 package br.com.teste.todolist.controller;
 
-import br.com.teste.todolist.model.User;
-import br.com.teste.todolist.repository.UserRepository;
+import br.com.teste.todolist.model.Users;
+import br.com.teste.todolist.model.dto.UserDto;
 import br.com.teste.todolist.service.UserService;
+import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/users")
@@ -17,22 +19,40 @@ public class UserController {
     private UserService userService;
 
     @GetMapping
-    public List<User> buscaTodos(){
-        return userService.findAll();
+    public ResponseEntity<List<UserDto>> buscaTodos(){
+        List<UserDto> allUsers = userService.findAll();
+        return ResponseEntity
+                .ok()
+                .body(allUsers);
     }
 
-    @PostMapping
-    public User salvaUsuario(@RequestBody User user){
-        return userService.save(user);
+    @PostMapping()
+    public ResponseEntity<String> salvaUsuario(@RequestBody UserDto user){
+        userService.save(user);
+        return ResponseEntity
+                .ok()
+                .body("Cadastrado com sucesso");
     }
 
     @GetMapping("/{id}")
-    public Optional<User> buscaUsuarioPelaId(@PathVariable(name = "id")Long id){
-        return userService.findById(id);
+    public ResponseEntity<UserDto> buscaUsuarioPelaId(@PathVariable(name = "id")Long id) throws NotFoundException {
+        try {
+
+            UserDto byId = userService.findById(id);
+            return ResponseEntity
+                    .ok()
+                    .body(byId);
+        } catch (NotFoundException e) {
+            e.printStackTrace();
+            return ResponseEntity
+                    .status(HttpStatus.NOT_FOUND)
+                    .body(null);
+        }
+
     }
 
     @PutMapping("/{id}")
-    public User atualizaUsuarioPelaId(@PathVariable(name = "id")Long id, @RequestBody User user){
+    public Users atualizaUsuarioPelaId(@PathVariable(name = "id")Long id, @RequestBody Users user){
         return userService.updateUser(id,user);
 
     }

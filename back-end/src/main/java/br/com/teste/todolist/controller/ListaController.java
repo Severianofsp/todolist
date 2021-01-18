@@ -1,8 +1,11 @@
 package br.com.teste.todolist.controller;
 
 import br.com.teste.todolist.model.Lista;
+import br.com.teste.todolist.model.Users;
 import br.com.teste.todolist.service.ListaService;
+import br.com.teste.todolist.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -14,14 +17,17 @@ public class ListaController {
     @Autowired
     private ListaService listaService;
 
+    @Autowired
+    private UserService userService;
+
     @GetMapping
     public List<Lista> buscaTodasListas() {
         return listaService.findAll();
     }
 
     @PostMapping
-    public Lista salvaLista(@RequestBody Lista lista){
-        return listaService.save(lista);
+    public Lista salvaLista(@RequestBody Lista lista, @AuthenticationPrincipal Users user){
+        return listaService.save(lista, user);
     }
 
     @GetMapping("/{id}")

@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.sql.SQLDataException;
 import java.util.List;
 
 @RestController
@@ -26,12 +27,20 @@ public class UserController {
                 .body(allUsers);
     }
 
-    @PostMapping()
+    @PostMapping
     public ResponseEntity<String> salvaUsuario(@RequestBody UserDto user){
-        userService.save(user);
-        return ResponseEntity
-                .ok()
-                .body("Cadastrado com sucesso");
+        try {
+            userService.save(user);
+            return ResponseEntity
+                    .ok()
+                    .body("Cadastrado com sucesso");
+        } catch (SQLDataException e) {
+            e.printStackTrace();
+            return ResponseEntity
+                    .status(HttpStatus.BAD_REQUEST)
+                    .body("Erro ao Cadastrar Usuário");
+        }
+
     }
 
     @GetMapping("/{id}")

@@ -12,10 +12,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.sql.SQLDataException;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -26,7 +28,7 @@ public class UserService {
     private UserRepository userRepository;
 
 
-    public void save(UserDto user){
+    public void save(UserDto user) throws SQLDataException {
 
         Users userDb = new Users();
         userDb.setNome(user.getNome());
@@ -35,7 +37,11 @@ public class UserService {
         userDb.setEmail(user.getEmail().toLowerCase());
         userDb.setDateCreation(getTimeNow());
         userDb.setProfile(TypeProfileEnum.USARIO.getCod());
-        userRepository.save(userDb);
+        if(isRegisterValid(user.getEmail())){
+        Users save = userRepository.save(userDb);
+        }else {
+            throw new SQLDataException("O Usuário já existe no banco");
+        }
         log.info("User created with Email: " + user.getEmail());
     }
 
@@ -87,5 +93,9 @@ public class UserService {
         LocalDateTime localDateTime = LocalDateTime.now(ZoneId.of("America/Sao_Paulo"));
         DateTimeFormatter formater = DateTimeFormatter.ofPattern("dd-MM-yyyy");
         return localDateTime.format(formater);
+    }
+
+    public Boolean isRegisterValid(String email){
+        return !userRepository.existsByEmail(email);
     }
 }

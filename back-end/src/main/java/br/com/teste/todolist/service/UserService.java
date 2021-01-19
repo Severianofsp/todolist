@@ -60,24 +60,28 @@ public class UserService {
         return convertToDto(userToFind);
     }
 
-    public Users updateUser(Long id, Users user){
+    public Users updateUser(Long id, Users user) throws NotFoundException {
 
-        Users atualiza = userRepository.findById(id).orElseThrow();
+        Users atualiza = userRepository.findById(id).orElse(null);
+        if(atualiza != null) {
+            atualiza.setEmail(user.getEmail());
+            atualiza.setNome(user.getNome());
+            atualiza.setSobrenome(user.getSobrenome());
 
-        atualiza.setEmail(user.getEmail());
-        atualiza.setNome(user.getNome());
-        atualiza.setSobrenome(user.getSobrenome());
-
-        userRepository.save(atualiza);
-        log.info("Usuario Atualizado com ID: " + id);
-
-        return atualiza;
+            log.info("Usuario Atualizado com ID: " + id);
+            return userRepository.save(atualiza);
+        }
+        throw new NotFoundException("Usuario com Id: " + id + "não foi encontado no banco");
     }
 
-    public void deleteUserById(Long id){
-        Users user = userRepository.findById(id).orElseThrow();
-        userRepository.delete(user);
-        log.info("Usuario Deletado com ID: " + id);
+    public void deleteUserById(Long id) throws NotFoundException {
+        Users user = userRepository.findById(id).orElse(null);
+
+        if(user != null) {
+            userRepository.delete(user);
+            log.info("Usuario Deletado com ID: " + id);
+        }
+        throw new NotFoundException("Usuario com Id: " + id + "não foi encontado no banco");
     }
 
     private UserDto convertToDto(Users user) {

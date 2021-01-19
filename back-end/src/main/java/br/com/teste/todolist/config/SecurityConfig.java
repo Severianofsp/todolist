@@ -34,6 +34,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .headers().frameOptions().disable()
                 .and()
             .authorizeRequests()
+                .antMatchers(HttpMethod.GET,"/v2/api-docs","/configuration/ui","/swagger-resources/**",
+                        "/configuration/security","/swagger-ui.html","/webjars/**").permitAll()
                 .antMatchers(HttpMethod.GET,"/", "/console/**","/users","/users/**").permitAll()
                 .antMatchers(HttpMethod.POST,"/users").permitAll()
                 .antMatchers(HttpMethod.POST,"/lista").hasAnyAuthority(USUARIO,ADM,GESTOR)

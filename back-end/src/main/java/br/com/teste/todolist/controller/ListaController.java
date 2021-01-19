@@ -26,7 +26,7 @@ public class ListaController {
     }
 
     @PostMapping
-    public Lista salvaLista(@RequestBody Lista lista, @AuthenticationPrincipal Users user){
+    public Lista salvaLista(@RequestBody Lista lista, @RequestBody Users user){
         return listaService.save(lista, user);
     }
 

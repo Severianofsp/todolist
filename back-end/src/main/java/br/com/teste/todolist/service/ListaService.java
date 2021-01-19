@@ -35,12 +35,12 @@ public class ListaService {
     }
 
     public void deletaListaPeloId(Long id) {
-        Lista lista = listaRepository.findById(id).orElseThrow();
+        Lista lista = listaRepository.findById(id).orElseThrow(null);
         listaRepository.delete(lista);
     }
 
     public Lista atualizaListaPeloId(Long id,Lista lista) {
-        Lista atualiza = listaRepository.findById(id).orElseThrow();
+        Lista atualiza = listaRepository.findById(id).orElseThrow(null);
 
         atualiza.setData(lista.getData());
         atualiza.setMensagem(lista.getMensagem());

@@ -2,9 +2,12 @@ package br.com.teste.todolist.model;
 
 import br.com.teste.todolist.enuns.TypeProfileEnum;
 import br.com.teste.todolist.model.dto.UserDto;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import springfox.documentation.annotations.ApiIgnore;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -38,10 +41,12 @@ public class Users {
     private String password;
 
     @Column(name = "dt_creation")
+    @JsonIgnore
     private String dateCreation;
 
     @OneToMany
     @JoinColumn(name = "list_fk")
+    @ApiModelProperty(value ="Lista do Usuário")
     private List<Lista> lista;
 
 

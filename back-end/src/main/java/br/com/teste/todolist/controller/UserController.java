@@ -44,9 +44,8 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<UserDto> buscaUsuarioPelaId(@PathVariable(name = "id")Long id) throws NotFoundException {
+    public ResponseEntity<UserDto> buscaUsuarioPelaId(@PathVariable(name = "id")Long id) {
         try {
-
             UserDto byId = userService.findById(id);
             return ResponseEntity
                     .ok()
@@ -61,13 +60,34 @@ public class UserController {
     }
 
     @PutMapping("/{id}")
-    public Users atualizaUsuarioPelaId(@PathVariable(name = "id")Long id, @RequestBody Users user){
-        return userService.updateUser(id,user);
+    public ResponseEntity<Users> atualizaUsuarioPelaId(@PathVariable(name = "id")Long id, @RequestBody Users user){
+        try {
+            userService.updateUser(id,user);
+            return ResponseEntity
+                    .ok()
+                    .body(null);
+        } catch (NotFoundException e) {
+            e.printStackTrace();
+            return ResponseEntity
+                    .status(HttpStatus.NOT_FOUND)
+                    .body(null);
+        }
 
     }
 
     @DeleteMapping("{id}")
-    public void deletaUsuarioPelaId(@PathVariable(name = "id")Long id){
-        userService.deleteUserById(id);
+    public ResponseEntity deletaUsuarioPelaId(@PathVariable(name = "id")Long id){
+        try {
+            userService.deleteUserById(id);
+            return ResponseEntity
+                    .ok()
+                    .body(null);
+        } catch (NotFoundException e) {
+            e.printStackTrace();
+            return ResponseEntity
+                    .status(HttpStatus.NOT_FOUND)
+                    .body(null);
+        }
+
     }
 }
